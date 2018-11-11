@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Game;
+use Illuminate\Support\Facades\Auth;
 
 use Illuminate\Http\Request;
 
@@ -25,7 +26,7 @@ class HomeController extends Controller
      */
     public function index()
     {
-        $query = Game::getResults('1');
+        $query = Game::getResults(Auth::id());
         $results = Array(
           'won' => $query->won,
           'games' => $query->games,

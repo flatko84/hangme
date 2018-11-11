@@ -25,7 +25,7 @@ class GameController extends Controller
 
 
     public function guess(Request $request){
-$user_id = Auth::id();;
+$user_id = Auth::id();
 $letter = $request->message;
 $word = Game::getCurrentWord($user_id);
 
