@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Game;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class GameController extends Controller
 {
@@ -17,16 +18,16 @@ class GameController extends Controller
 
     public function index(){
 
-      $user_id = '1';
+      $user_id = Auth::id();
       $game = Game::newWord($user_id);
-    return view('game',$game);     // get user id
+    return view('game',$game);
     }
 
 
     public function guess(Request $request){
-$user_id = '1';
+$user_id = Auth::id();;
 $letter = $request->message;
-$word = Game::getCurrentWord($user_id);  //to do - get user id
+$word = Game::getCurrentWord($user_id);
 
 $incomplete = $word->incomplete;
 $complete = $word->complete;
@@ -41,14 +42,14 @@ $response = array(
   'image' => $word->mistakes
 );
 
-if (!empty($positions)){  //ako ima syvpadenie - popylva
+if (!empty($positions)){
   foreach ($positions as $position){
     $incomplete[$position] = $letter;
   }
   $response['incomplete'] = $incomplete;
   $response['guess'] = true;
 
-  if ($complete == $incomplete){  // ako e poznal dumata - win
+  if ($complete == $incomplete){
 
   $response['end'] = true;
   $response['win'] = true;
@@ -59,11 +60,11 @@ Game::newTurn($user_id, $response);
   }
 
 
-}else{   // ako nqma syvpadenie - izgrajda besilka
+}else{
 
 
   $response['image']++;
-  if ($response['image']>5){   // ako nqma pove4e opiti - lose
+  if ($response['image']>5){
     $response['end'] = true;
     $response['win'] = false;
     Game::endGame($user_id, false);
@@ -76,7 +77,7 @@ return response()->json($response);
 
 
 public function whole(Request $request){
-    $user_id = '1';
+    $user_id = Auth::id();
 
   $whole = $request->message;
   $word = Game::getCurrentWord($user_id);
