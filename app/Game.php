@@ -12,8 +12,8 @@ class Game extends Model
     DB::table('games')->where('user_id', '=', $user_id)->delete();
     $word = DB::table('words')->inRandomOrder()->first();
 
-    $incomplete = substr($word->word,0,1).str_repeat('.',strlen($word->word)-2).substr($word->word,-1);
-
+    //$incomplete = substr($word->word,0,1).str_repeat('.',strlen($word->word)-2).substr($word->word,-1);
+    $incomplete = preg_replace('/\B.\B/', '.', $word->word);
 
     $response = Array(
         'user_id' => $user_id,
