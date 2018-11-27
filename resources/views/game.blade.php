@@ -5,7 +5,7 @@
     <div class="row justify-content-center">
         <div class="col-md-8">
             <div class="card">
-                <div class="card-header">Hang Me<div><input type=button value="Back To Stats" onClick="window.location='/home'" style="display: inline-block; position: relative; right:0"></div></div>
+                <div class="card-header">Hang Me<div style="display: inline-block; position: relative; right:0px"><input type=button value="Back To Stats" onClick="window.location='/home'"></div></div>
 
                 <div class="card-body">
                     @if (session('status'))
@@ -18,7 +18,7 @@
                     <div>{{ $description }}</div>
 
 
-                      <img id="pic" src="0.png"><br>
+                      <img id="pic" src="{{ $mistakes }}.png"><br>
                     <input type="button" class="letter" value="q" id="q">
                     <input type="button" class="letter" value="w" id="w">
                     <input type="button" class="letter" value="e" id="e">
