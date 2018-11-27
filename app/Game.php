@@ -9,22 +9,30 @@ class Game extends Model
 {
 
   public static function newWord($user_id){
-    DB::table('games')->where('user_id', '=', $user_id)->delete();
+    $saved = DB::table('games')->where('user_id', '=', $user_id)->first();
+
+    if ($saved){
+      $response = (array)$saved;
+
+    }else{
+
     $word = DB::table('words')->inRandomOrder()->first();
 
-    //$incomplete = substr($word->word,0,1).str_repeat('.',strlen($word->word)-2).substr($word->word,-1);
     $incomplete = preg_replace('/\B.\B/', '.', $word->word);
+
+
 
     $response = Array(
         'user_id' => $user_id,
         'complete' => $word->word,
         'incomplete' => $incomplete,
+        'description' => $word->description,
         'mistakes' => '0',
         'letters_played' => ''
     );
 
     DB::table('games')->insert($response);
-    $response['description'] = $word->description;
+  }
 
 return $response;
   }
@@ -64,8 +72,19 @@ DB::table('games')->where('user_id','=',$user_id)->delete();
 }
 
 public static function getResults($user_id){
-  $result = DB::table('users')->where('id','=',$user_id)->first();
+  $score = DB::table('users')->where('id','=',$user_id)->first();
+  $saved = DB::table('games')->where('user_id','=',$user_id)->count();
+  //$saved =
+
+  $result = Array(
+    'won' => $score->won,
+    'games' => $score->games,
+    'lost' => $score->games - $score->won,
+    'saved' => $saved
+  );
   return $result;
 }
+
+
     //
 }

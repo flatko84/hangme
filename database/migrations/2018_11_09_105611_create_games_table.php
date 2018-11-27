@@ -18,8 +18,9 @@ class CreateGamesTable extends Migration
             $table->integer('user_id');
             $table->text('complete');
             $table->text('incomplete');
+            $table->text('description');
             $table->integer('mistakes');
-            $table->text('letters_played')->default('');
+            $table->text('letters_played');
             $table->timestamps();
         });
     }

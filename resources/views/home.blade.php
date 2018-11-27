@@ -16,8 +16,13 @@
                     Games played - {{ $games }} <br>
                     Games won - {{ $won }} <br>
                     Games lost - {{ $lost }} <br>
+                    @if ( $saved>0 )
+                    <input type=button value="Continue game" onClick="window.location='/game'">
+                    @else
+
                     <br>
                     <input type=button value="Start new game" onClick="window.location='/game'">
+                    @endif
                 </div>
             </div>
         </div>

@@ -26,12 +26,10 @@ class HomeController extends Controller
      */
     public function index()
     {
-        $query = Game::getResults(Auth::id());
-        $results = Array(
-          'won' => $query->won,
-          'games' => $query->games,
-          'lost' => $query->games - $query->won
-        );
-        return view('home',$results);
+        $result = Game::getResults(Auth::id());
+
+        return view('home',$result);
     }
+
+
 }
