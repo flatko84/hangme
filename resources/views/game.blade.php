@@ -60,7 +60,13 @@
 @section('gamescript')
 <script type="text/javascript"><!--
 $(document).ready(function(){
-            var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
+  var init_letters_played = '{{ $letters_played }}';
+  for (i=0;i<init_letters_played.length;i++){
+    $('#'+init_letters_played[i]).attr('disabled',true);
+
+  }
+
+        var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
 $('.letter').click( function() {
   var letter = $(this).attr("value");
 	$.ajax({
@@ -115,7 +121,7 @@ $('#whole').click( function() {
       $('#'+json.letters_played[i]).attr('disabled',true);
 
     }*/
-    
+
       if (json.win) {
         var result = 'won';
       } else {

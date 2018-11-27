@@ -20,6 +20,17 @@ class Game extends Model
 
     $incomplete = preg_replace('/\B.\B/', '.', $word->word);
 
+    $letters_opened = preg_replace('/[^a-z]/s','',$incomplete);
+
+
+
+    for ($i = 0; $i < strlen($word->word); $i++){
+      if (in_array($word->word[$i],str_split($letters_opened))){
+      $incomplete[$i] = $word->word[$i];
+
+      }
+
+    }
 
 
     $response = Array(
@@ -28,7 +39,7 @@ class Game extends Model
         'incomplete' => $incomplete,
         'description' => $word->description,
         'mistakes' => '0',
-        'letters_played' => ''
+        'letters_played' => $letters_opened
     );
 
     DB::table('games')->insert($response);
