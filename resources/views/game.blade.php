@@ -19,15 +19,15 @@
                     @endif
                     <div id="game">
                     <div>
-                      <div>
+                      <div style="display: inline-block;">
                         <h2 id="incomplete">{{ $incomplete }}</h2>
 
                       </div>
                       <div id="win" style="display: none;">
-                        You won!
+                        <h2>You won!</h2>
                       </div>
                       <div id="lose" style="display: none;">
-                        You've been hanged!
+                        <h2>You've been hanged!</h2>
                       </div>
                       <div id="new-game" style="display: none;">
                         <input type="button" value="New Game" onclick="window.location='/game'">
