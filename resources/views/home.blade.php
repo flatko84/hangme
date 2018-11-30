@@ -23,6 +23,11 @@
                     <br>
                     <input type=button value="Start new game" onClick="window.location='/game'">
                     @endif
+
+
+                    {{ print_r($open_games) }}
+
+
                 </div>
             </div>
         </div>

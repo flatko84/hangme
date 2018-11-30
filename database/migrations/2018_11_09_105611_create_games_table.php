@@ -15,13 +15,10 @@ class CreateGamesTable extends Migration
     {
         Schema::create('games', function (Blueprint $table) {
             $table->increments('game_id');
-            $table->integer('user_id');
-            $table->text('complete');
-            $table->text('incomplete');
-            $table->text('description');
-            $table->integer('mistakes');
-            $table->text('letters_played');
-            $table->timestamps();
+            $table->integer('creator_user_id');
+
+            //if game is open; closes after someone makes first move
+            $table->boolean('open');
         });
     }
 

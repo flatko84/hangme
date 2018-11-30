@@ -27,6 +27,7 @@ class HomeController extends Controller
     public function index()
     {
         $result = Game::getResults(Auth::id());
+        $result['open_games'] = (array)Game::getOpenGames();
 
         return view('home',$result);
     }
