@@ -11,7 +11,7 @@ class GameController extends Controller
 {
 
 
-  public function __construct()
+    public function __construct()
   {
       $this->middleware('auth');
   }
@@ -24,38 +24,37 @@ class GameController extends Controller
     }
 
 
-    public function guess(Request $request){
-$user_id = Auth::id();
-$letter = $request->message;
-$word = Game::getCurrentWord($user_id);
+  public function guess(Request $request){
+      $user_id = Auth::id();
+      $letter = $request->message;
+      $word = Game::getCurrentWord($user_id);
 
-$incomplete = $word->incomplete;
-$complete = $word->complete;
-$positions = $this->multiStrpos($complete,$letter);
+      $incomplete = $word->incomplete;
+      $complete = $word->complete;
+      $positions = $this->multiStrpos($complete,$letter);
 
-$response = array(
-  'end' => false,
-  'win' => false,
-  'guess' => false,
-  'incomplete' => $incomplete,
-  'letters_played' => $word->letters_played.$letter,
-  'image' => $word->mistakes
-);
+      $response = array(
+        'end' => false,
+        'guess' => false,
+        'incomplete' => $incomplete,
+        'letters_played' => $word->letters_played.$letter,
+        'image' => $word->mistakes
+      );
 
-if (!empty($positions)){
-  foreach ($positions as $position){
-    $incomplete[$position] = $letter;
-  }
-  $response['incomplete'] = $incomplete;
-  $response['guess'] = true;
+      if (!empty($positions)){
+        foreach ($positions as $position){
+          $incomplete[$position] = $letter;
+        }
+        $response['incomplete'] = $incomplete;
+        $response['guess'] = true;
 
-  if ($complete == $incomplete){
+        if ($complete == $incomplete){
 
-  $response['end'] = true;
-  $response['win'] = true;
-Game::endGame($user_id, true);
-  } else {
-Game::newTurn($user_id, $response);
+          $response['end'] = "win";
+
+          Game::endGame($user_id, true);
+        } else {
+          Game::newTurn($user_id, $response);
 
   }
 
@@ -63,29 +62,32 @@ Game::newTurn($user_id, $response);
 }else{
 
 
-  $response['image']++;
-  if ($response['image']>5){
-    $response['end'] = true;
-    $response['win'] = false;
-    Game::endGame($user_id, false);
-    }else{
-    Game::newTurn($user_id, $response);
-  }
-}
-return response()->json($response);
-    }
+      $response['image']++;
+    if ($response['image']>5){
+      $response['end'] = "lose";
+
+      Game::endGame($user_id, false);
+        }else{
+        Game::newTurn($user_id, $response);
+        }
+      }
+      return response()->json($response);
+      }
 
 
-public function whole(Request $request){
-    $user_id = Auth::id();
+    public function whole(Request $request){
+      $user_id = Auth::id();
 
-  $whole = $request->message;
-  $word = Game::getCurrentWord($user_id);
-  $match = ($whole == $word->complete);
-  Game::endGame($user_id, $match);
-  return response()->json(array(
-    'win' => $match,
-    'incomplete' => $whole
+      $whole = $request->message;
+      $word = Game::getCurrentWord($user_id);
+
+      $end = $whole == $word->complete ? "win" : "lose";
+
+
+      Game::endGame($user_id, $end);
+      return response()->json(array(
+        'end' => $end,
+        'incomplete' => $whole
 
 )
   );

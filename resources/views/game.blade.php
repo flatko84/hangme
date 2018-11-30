@@ -5,7 +5,11 @@
     <div class="row justify-content-center">
         <div class="col-md-8">
             <div class="card">
-                <div class="card-header">Hang Me<div style="display: inline-block; position: relative; right:0px"><input type=button value="Back To Stats" onClick="window.location='/home'"></div></div>
+                <div class="card-header">Hang Me
+                  <div style="display: inline-block; position: relative; right:0px">
+                  <input type=button value="Back To Stats" onClick="window.location='/home'">
+                </div>
+              </div>
 
                 <div class="card-body">
                     @if (session('status'))
@@ -14,11 +18,26 @@
                         </div>
                     @endif
                     <div id="game">
-                    <div><h2 id="incomplete">{{ $incomplete }}</h2></div>
+                    <div>
+                      <div>
+                        <h2 id="incomplete">{{ $incomplete }}</h2>
+
+                      </div>
+                      <div id="win" style="display: none;">
+                        You won!
+                      </div>
+                      <div id="lose" style="display: none;">
+                        You've been hanged!
+                      </div>
+                      <div id="new-game" style="display: none;">
+                        <input type="button" value="New Game" onclick="window.location='/game'">
+
+                      </div>
+                    </div>
                     <div>{{ $description }}</div>
 
 
-                      <img id="pic" src="{{ $mistakes }}.png"><br>
+                    <img id="pic" src="{{ $mistakes }}.png"><br>
                     <input type="button" class="letter" value="q" id="q">
                     <input type="button" class="letter" value="w" id="w">
                     <input type="button" class="letter" value="e" id="e">
@@ -46,8 +65,7 @@
                     <input type="button" class="letter" value="m" id="m">
                     <input type="button" class="letter" value="n" id="n">
 
-                  <div>Whole word: <input id="word" name="whole"></input><input type="button" value="Guess" id="whole"></div>
-
+                  <div>Whole word: <input id="word" name="whole"><input type="button" value="Guess" id="whole"></div>
                     </div>
 
                 </div>
@@ -58,88 +76,8 @@
 @endsection
 
 @section('gamescript')
-<script type="text/javascript"><!--
-$(document).ready(function(){
-  var init_letters_played = '{{ $letters_played }}';
-  for (i=0;i<init_letters_played.length;i++){
-    $('#'+init_letters_played[i]).attr('disabled',true);
-
-  }
-
-        var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
-$('.letter').click( function() {
-  var letter = $(this).attr("value");
-	$.ajax({
-		url: '/game/guess',
-		type: 'post',
-    data: {_token: CSRF_TOKEN, message: letter},
-		dataType: 'json',
-		success: function(json) {
-
-		$('#incomplete').html(json.incomplete);
-
-    $('#pic').attr('src',json.image + '.png');
-
-		for (i=0;i<json.letters_played.length;i++){
-      $('#'+json.letters_played[i]).attr('disabled',true);
-
-    }
-    if (json.end) {
-      if (json.win) {
-        var result = 'won';
-      } else {
-        var result = 'lost';
-      }
-      if (confirm('You ' + result + '! Start new game?')){
-        window.location = '/game';
-      }else{
-        window.location = '/home';
-      }
-
-      }
-
-    }
+<script type="text/javascript">var init_letters_played = '{{ $letters_played }}';</script>
+<script type="text/javascript" src="{{ asset('js/ajax-game.js') }}"></script>
 
 
-	});
-});
-
-$('#whole').click( function() {
-
-	$.ajax({
-		url: '/game/whole',
-		type: 'post',
-    data: {_token: CSRF_TOKEN, message: $('#word').val()},
-		dataType: 'json',
-		success: function(json) {
-
-		$('#incomplete').html(json.incomplete);
-
-    //$('#pic').attr('src',json.image + '.png');
-
-		/*for (i=0;i<json.letters_played.length;i++){
-      $('#'+json.letters_played[i]).attr('disabled',true);
-
-    }*/
-
-      if (json.win) {
-        var result = 'won';
-      } else {
-        var result = 'lost';
-      }
-      if (confirm('You ' + result + '! Start new game?')){
-        window.location = '/game';
-      }else{
-        window.location = '/home';
-      }
-
-
-
-    }
-
-
-	});
-});
-});
-//--></script>
 @endsection
