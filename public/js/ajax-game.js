@@ -25,7 +25,7 @@ $('.letter').click( function() {
 
 		$('#incomplete').html(json.incomplete);
 
-    $('#pic').attr('src',json.image + '.png');
+    $('#pic').attr('src',json.url+'/'+json.image + '.png');
 
 		for (i=0;i<json.letters_played.length;i++){
       $('#'+json.letters_played[i]).attr('disabled',true);

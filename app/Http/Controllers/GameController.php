@@ -16,12 +16,15 @@ class GameController extends Controller
       $this->middleware('auth');
   }
 
-    public function index(){
+    public function index($join_id = '0'){
 
-      $user_id = Auth::id();
-      $game = Game::newWord($user_id);
-    return view('game',$game);
-    }
+        $user_id = Auth::id();
+
+        $game = Game::newGame($user_id, $join_id);
+        $game['url'] = url('/');
+
+        return view('game',$game);
+      }
 
 
   public function guess(Request $request){
@@ -38,8 +41,11 @@ class GameController extends Controller
         'guess' => false,
         'incomplete' => $incomplete,
         'letters_played' => $word->letters_played.$letter,
-        'image' => $word->mistakes
+        'image' => $word->mistakes,
+        'game_id' => $word->game_id
       );
+
+
 
       if (!empty($positions)){
         foreach ($positions as $position){
@@ -52,7 +58,7 @@ class GameController extends Controller
 
           $response['end'] = "win";
 
-          Game::endGame($user_id, true);
+          Game::endGame($user_id, $word->game_id, true);
         } else {
           Game::newTurn($user_id, $response);
 
@@ -66,11 +72,12 @@ class GameController extends Controller
     if ($response['image']>5){
       $response['end'] = "lose";
 
-      Game::endGame($user_id, false);
+      Game::endGame($user_id, $word->game_id, false);
         }else{
         Game::newTurn($user_id, $response);
         }
       }
+      $response['url'] = url('/');
       return response()->json($response);
       }
 
@@ -84,7 +91,7 @@ class GameController extends Controller
       $end = $whole == $word->complete ? "win" : "lose";
 
 
-      Game::endGame($user_id, $end);
+      Game::endGame($user_id, $word->game_id, $end);
       return response()->json(array(
         'end' => $end,
         'incomplete' => $whole
@@ -92,6 +99,8 @@ class GameController extends Controller
 )
   );
     }
+
+
 
 
     protected function multiStrpos($word,$letter){

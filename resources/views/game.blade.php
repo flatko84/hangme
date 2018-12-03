@@ -37,7 +37,7 @@
                     <div>{{ $description }}</div>
 
 
-                    <img id="pic" src="{{ $mistakes }}.png"><br>
+                    <img id="pic" src="{{ $url.'/'.$mistakes }}.png"><br>
                     <input type="button" class="letter" value="q" id="q">
                     <input type="button" class="letter" value="w" id="w">
                     <input type="button" class="letter" value="e" id="e">

@@ -16,7 +16,8 @@ class CreateGamesTable extends Migration
         Schema::create('games', function (Blueprint $table) {
             $table->increments('game_id');
             $table->integer('creator_user_id');
-
+            $table->text('word');
+            $table->text('description');
             //if game is open; closes after someone makes first move
             $table->boolean('open');
         });

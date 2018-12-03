@@ -26,8 +26,23 @@ class HomeController extends Controller
      */
     public function index()
     {
-        $result = Game::getResults(Auth::id());
-        $result['open_games'] = (array)Game::getOpenGames();
+        $user_id = Auth::id();
+        $result = Game::getResults($user_id);
+
+        $open_games = Game::getOpenGames($user_id);
+        $show = Array();
+        foreach ($open_games as $open_game){
+            $show[] = Array(
+              'url' => url("/game/".$open_game->game_id),
+              'name' => $open_game->name
+            );
+
+            $result['open_games'] = $show;
+
+        }
+
+
+        //$result['open_games'] = (array)Game::getOpenGames();
 
         return view('home',$result);
     }

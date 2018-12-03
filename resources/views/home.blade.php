@@ -22,10 +22,22 @@
 
                     <br>
                     <input type=button value="Start new game" onClick="window.location='/game'">
+                    
+                    @if (isset($open_games))
+                    <h3>Join game:</h3>
+                    @foreach ($open_games as $open_game)
+                    <a href = "{{ $open_game['url'] }}">
+                      {{ $open_game['name'] }}
+                    </a>
+                    <br>
+
+
+                    @endforeach
+                  @else
+                  <h3>No games to join</h3>
+                  @endif
                     @endif
 
-
-                    {{ print_r($open_games) }}
 
 
                 </div>
