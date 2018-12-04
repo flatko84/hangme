@@ -22,6 +22,7 @@ class UserToGame extends Migration
         $table->text('description');
         $table->integer('mistakes');
         $table->text('letters_played');
+        $table->integer('result');
         $table->timestamps();
       });
     }

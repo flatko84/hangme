@@ -96,11 +96,24 @@ class GameController extends Controller
         'end' => $end,
         'incomplete' => $whole
 
-)
-  );
+        )
+      );
     }
 
+  public function notifyGame(Request $request){
+    $user_id = Auth::id();
+    $notify = Game::getNotifications($request->message, $user_id);
+    $formatted = Array();
+    foreach ($notify as $line){
+      $entry['name'] = $line->name;
+      $entry['mistakes'] = $line->mistakes;
+      $entry['result'] = $line->result;
+      $formatted[]=$entry;
+    }
 
+    return response()->json(['data' => $formatted]);
+
+  }
 
 
     protected function multiStrpos($word,$letter){

@@ -8,20 +8,50 @@ $(document).ready(function(){
      }
   };
 
+  setInterval(function(){
+
+  $.ajax({
+   url: '/notify',
+   type: 'post',
+   data: {_token: CSRF_TOKEN, message: game_id},
+   dataType: 'json',
+   success: function(json) {
+     var ms = "";
+     for (i=0;i<json.data.length;i++){
+
+       ms += json.data[i].name;
+
+       if (json.data[i].result == '0'){ ms += " has been hanged."; }
+       if (json.data[i].result == '1'){ ms += " guessed the word."; }
+       if (json.data[i].result == '-1'){
+
+       ms += " has made ";
+       ms += json.data[i].mistakes;
+       ms += " mistakes.";
+
+     }
+     ms += "<br>";
+    $('#notify').html(ms);
+  }
+}
+});
+},3000);
+
 
   for (i=0;i<init_letters_played.length;i++){
     $('#'+init_letters_played[i]).attr('disabled',true);
 
   }
+
   var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
-$('.letter').click( function() {
-  var letter = $(this).attr("value");
-	$.ajax({
-		url: '/game/guess',
-		type: 'post',
-    data: {_token: CSRF_TOKEN, message: letter},
-		dataType: 'json',
-		success: function(json) {
+    $('.letter').click( function() {
+      var letter = $(this).attr("value");
+	     $.ajax({
+		       url: '/game/guess',
+		       type: 'post',
+           data: {_token: CSRF_TOKEN, message: letter},
+		       dataType: 'json',
+		       success: function(json) {
 
 		$('#incomplete').html(json.incomplete);
 
@@ -42,6 +72,8 @@ $('.letter').click( function() {
 	});
 });
 
+
+
 $('#whole').click( function() {
 
 	$.ajax({
@@ -58,4 +90,6 @@ $('#whole').click( function() {
     }
 	});
 });
+
+
 });

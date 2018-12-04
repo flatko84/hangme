@@ -28,23 +28,28 @@ class HomeController extends Controller
     {
         $user_id = Auth::id();
         $result = Game::getResults($user_id);
-
-        $open_games = Game::getOpenGames($user_id);
-        $show = Array();
-        foreach ($open_games as $open_game){
-            $show[] = Array(
-              'url' => url("/game/".$open_game->game_id),
-              'name' => $open_game->name
-            );
-
-            $result['open_games'] = $show;
-
-        }
+        $result['user_id'] = $user_id;
 
 
         //$result['open_games'] = (array)Game::getOpenGames();
 
         return view('home',$result);
+    }
+
+    public function openGames(Request $request){
+      $open_games = Game::getOpenGames($request->message);
+      $show = Array();
+      foreach ($open_games as $open_game){
+          $show[] = Array(
+            'url' => url("/game/".$open_game->game_id),
+            'name' => $open_game->name
+          );
+
+          return response()->json($show);
+
+      }
+
+
     }
 
 

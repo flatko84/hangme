@@ -22,27 +22,24 @@
 
                     <br>
                     <input type=button value="Start new game" onClick="window.location='/game'">
-                    
-                    @if (isset($open_games))
+
+
                     <h3>Join game:</h3>
-                    @foreach ($open_games as $open_game)
-                    <a href = "{{ $open_game['url'] }}">
-                      {{ $open_game['name'] }}
-                    </a>
-                    <br>
 
-
-                    @endforeach
-                  @else
-                  <h3>No games to join</h3>
-                  @endif
+                    <div id="opengames"></div>
                     @endif
-
-
 
                 </div>
             </div>
         </div>
     </div>
 </div>
+@endsection
+
+@section('gamescript')
+<script type="text/javascript">var user_id={{ $user_id }}</script>
+<script type="text/javascript" src="{{ asset('js/ajax-home.js') }}"></script>
+
+
+
 @endsection

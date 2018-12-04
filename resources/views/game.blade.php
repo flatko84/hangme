@@ -6,6 +6,9 @@
         <div class="col-md-8">
             <div class="card">
                 <div class="card-header">Hang Me
+                  <div id="notify">
+                    Game started.
+                  </div>
                   <div style="display: inline-block; position: relative; right:0px">
                   <input type=button value="Back To Stats" onClick="window.location='/home'">
                 </div>
@@ -76,8 +79,9 @@
 @endsection
 
 @section('gamescript')
-<script type="text/javascript">var init_letters_played = '{{ $letters_played }}';</script>
+<script type="text/javascript">var init_letters_played = '{{ $letters_played }}';var game_id = {{ $game_id }}</script>
 <script type="text/javascript" src="{{ asset('js/ajax-game.js') }}"></script>
+
 
 
 @endsection
