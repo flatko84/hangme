@@ -20,6 +20,7 @@ class GameController extends Controller
 
         $user_id = Auth::id();
 
+        
         $game = Game::newGame($user_id, $join_id);
         $game['url'] = url('/');
 

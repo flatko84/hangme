@@ -13,6 +13,12 @@ class Game extends Model
   public $timestamps = false;
 
 
+  public function users(){
+
+    return $this->belongsTo('App\User','creator_user_id','id');
+  }
+
+
   public static function newGame($user_id, $join_id){
 
     $saved = DB::table('user_to_game')->where('user_id', '=', $user_id)->where('result','=','-1')->first();
@@ -168,7 +174,7 @@ public static function endGame($user_id, $game_id, $result){
 public static function getResults($user_id){
   $score = DB::table('users')->where('id','=',$user_id)->first();
   $saved = DB::table('user_to_game')->where('user_id','=',$user_id)->where('result','=','-1')->count();
-  //$saved =
+
 
   $result = Array(
     'won' => $score->won,
