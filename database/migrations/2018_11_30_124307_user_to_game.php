@@ -20,6 +20,7 @@ class UserToGame extends Migration
         $table->text('complete');
         $table->text('incomplete');
         $table->text('description');
+        $table->integer('guesses');
         $table->integer('mistakes');
         $table->text('letters_played');
         $table->integer('result');

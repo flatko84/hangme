@@ -8,25 +8,26 @@ use Illuminate\Database\Eloquent\Model;
 class Game extends Model
 {
 
-  protected $fields = [
-
-  ];
+  protected $table = 'games';
+  protected $primaryKey = 'game_id';
+  public $timestamps = false;
 
 
   public static function newGame($user_id, $join_id){
 
     $saved = DB::table('user_to_game')->where('user_id', '=', $user_id)->where('result','=','-1')->first();
+    $word = DB::table('games')
+    ->where('game_id','=',$join_id)
+    ->first();
 
     if ($saved){
       $response = (array)$saved;
 
-    }elseif ($join_id != '0'){
+    }elseif ($join_id != '0' && $word->open == '1'){
 
 
 
-        $word = DB::table('games')
-        ->where('game_id','=',$join_id)
-        ->first();
+
 
         $incomplete = preg_replace('/\B.\B/', '.', $word->word);
 
@@ -49,6 +50,7 @@ class Game extends Model
           'incomplete' => $incomplete,
           'description' => $word->description,
           'result' => '-1',
+          'guesses' => '0',
           'mistakes' => '0',
           'letters_played' => $letters_opened
         );
@@ -91,6 +93,7 @@ class Game extends Model
         'incomplete' => $incomplete,
         'description' => $word->description,
         'result' => '-1',
+        'guesses' => '0',
         'mistakes' => '0',
         'letters_played' => $letters_opened
     );
@@ -122,7 +125,16 @@ public static function newTurn($user_id, $data){
           ->where('user_id','=',$user_id)
           ->increment('mistakes');
 
-        }
+        DB::table('user_to_game')
+            ->where('user_id','=',$user_id)
+              ->update(Array(
+                  'letters_played' => $data['letters_played']
+                  ));
+
+        }else{
+      DB::table('user_to_game')
+            ->where('user_id','=',$user_id)
+            ->increment('guesses');
 
     DB::table('user_to_game')
       ->where('user_id','=',$user_id)
@@ -130,6 +142,8 @@ public static function newTurn($user_id, $data){
             'incomplete' => $data['incomplete'],
             'letters_played' => $data['letters_played']
             ));
+
+          }
           }
 
 
@@ -146,7 +160,7 @@ public static function endGame($user_id, $game_id, $result){
 
   $players = DB::table('user_to_game')->where('game_id','=',$game_id)->where('result','=','-1')->count();
   if ($players == 0){
-    DB::table('games')->where('game_id','=',$game_id)->update(['finished' => '1']);
+    DB::table('games')->where('game_id','=',$game_id)->update(['finished' => '1', 'open' => '0']);
   }
 
 }

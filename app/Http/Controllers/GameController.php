@@ -106,6 +106,7 @@ class GameController extends Controller
     $formatted = Array();
     foreach ($notify as $line){
       $entry['name'] = $line->name;
+      $entry['guesses'] = $line->guesses;
       $entry['mistakes'] = $line->mistakes;
       $entry['result'] = $line->result;
       $formatted[]=$entry;

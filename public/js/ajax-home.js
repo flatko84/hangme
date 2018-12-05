@@ -5,10 +5,16 @@ $.ajax({
  data: {_token: CSRF_TOKEN, message: user_id},
  dataType: 'json',
  success: function(json) {
+   var msg = "";
   for (i=0;i<json.length;i++){
-    $('#opengames').html(json);
-
+    msg += "<a href='";
+    msg += json[i].url;
+    msg += "'>";
+    msg += json[i].name;
+    msg += "</a><br>";
   }
+  
+  $('#opengames').html(msg);
 }
 });
 },3000);

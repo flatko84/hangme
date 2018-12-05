@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Game;
 use Illuminate\Support\Facades\Auth;
-
 use Illuminate\Http\Request;
 
 class HomeController extends Controller
@@ -39,16 +38,17 @@ class HomeController extends Controller
     public function openGames(Request $request){
       $open_games = Game::getOpenGames($request->message);
       $show = Array();
+      if ($open_games){
       foreach ($open_games as $open_game){
           $show[] = Array(
             'url' => url("/game/".$open_game->game_id),
             'name' => $open_game->name
           );
 
-          return response()->json($show);
+        }
 
       }
-
+return response()->json($show);
 
     }
 

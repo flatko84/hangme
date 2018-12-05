@@ -25,7 +25,9 @@ $(document).ready(function(){
        if (json.data[i].result == '1'){ ms += " guessed the word."; }
        if (json.data[i].result == '-1'){
 
-       ms += " has made ";
+       ms += " has guessed ";
+       ms += json.data[i].guesses;
+       ms += " letters and made ";
        ms += json.data[i].mistakes;
        ms += " mistakes.";
 
