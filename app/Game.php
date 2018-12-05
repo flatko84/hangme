@@ -111,11 +111,6 @@ return $response;
   }
 
 
-public static function getCurrentWord($user_id){
-  $game = DB::table('user_to_game')->where('user_id','=',$user_id)->where('result','=','-1')->first();
-  return $game;
-
-}
 
 
 public static function newTurn($user_id, $data){
@@ -171,44 +166,5 @@ public static function endGame($user_id, $game_id, $result){
 
 }
 
-public static function getResults($user_id){
-  $score = DB::table('users')->where('id','=',$user_id)->first();
-  $saved = DB::table('user_to_game')->where('user_id','=',$user_id)->where('result','=','-1')->count();
 
-
-  $result = Array(
-    'won' => $score->won,
-    'games' => $score->games,
-    'lost' => $score->games - $score->won,
-    'saved' => $saved
-  );
-  return $result;
-}
-
-public static function getOpenGames($user_id){
-  $query = DB::table('games')
-  ->leftJoin('users','games.creator_user_id','=','users.id')
-  ->where('open','=','1')
-  ->where('creator_user_id','!=',$user_id)
-  ->get();
-
-  return $query;
-
-}
-
-public static function getNotifications($game_id, $user_id){
-
-    $query = DB::table('user_to_game')
-    ->leftJoin('users','user_to_game.user_id','=','users.id')
-    ->where('game_id','=',$game_id)
-    ->where('user_id','!=',$user_id)
-    ->get();
-
-    return $query;
-
-}
-
-
-
-    //
 }

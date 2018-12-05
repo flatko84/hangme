@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Game;
+use App\User;
+use App\UserToGame;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -20,7 +22,7 @@ class GameController extends Controller
 
         $user_id = Auth::id();
 
-        
+
         $game = Game::newGame($user_id, $join_id);
         $game['url'] = url('/');
 
@@ -31,7 +33,7 @@ class GameController extends Controller
   public function guess(Request $request){
       $user_id = Auth::id();
       $letter = $request->message;
-      $word = Game::getCurrentWord($user_id);
+      $word = UserToGame::where('user_id','=',$user_id)->where('result','=','-1')->first();
 
       $incomplete = $word->incomplete;
       $complete = $word->complete;
@@ -87,7 +89,7 @@ class GameController extends Controller
       $user_id = Auth::id();
 
       $whole = $request->message;
-      $word = Game::getCurrentWord($user_id);
+      $word = UserToGame::where('user_id','=',$user_id)->where('result','=','-1')->first();
 
       $end = $whole == $word->complete ? "win" : "lose";
 
@@ -103,10 +105,16 @@ class GameController extends Controller
 
   public function notifyGame(Request $request){
     $user_id = Auth::id();
-    $notify = Game::getNotifications($request->message, $user_id);
+
+    $notify = UserToGame::where('game_id','=',$request->message)
+    ->where('user_id','!=',$user_id)
+    ->get();
+
+
+
     $formatted = Array();
     foreach ($notify as $line){
-      $entry['name'] = $line->name;
+      $entry['name'] = $line->users->name;
       $entry['guesses'] = $line->guesses;
       $entry['mistakes'] = $line->mistakes;
       $entry['result'] = $line->result;
