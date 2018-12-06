@@ -116,7 +116,10 @@ class GameController extends Controller
   public function guess(Request $request){
       $user_id = Auth::id();
       $letter = $request->message;
+
       $word = UserToGame::where('user_id','=',$user_id)->where('result','=','-1')->first();
+      Game::where('game_id','=',$word->game_id)
+      ->update(Array('open' => false));
 
       $incomplete = $word->incomplete;
       $complete = $word->complete;
@@ -128,39 +131,55 @@ class GameController extends Controller
         'incomplete' => $incomplete,
         'letters_played' => $word->letters_played.$letter,
         'image' => $word->mistakes,
+        'guesses' => $word->guesses,
         'game_id' => $word->game_id
       );
 
 
 
-      if (!empty($positions)){
+      if (!empty($positions)){   //if guessed letter
         foreach ($positions as $position){
           $incomplete[$position] = $letter;
         }
         $response['incomplete'] = $incomplete;
         $response['guess'] = true;
 
-        if ($complete == $incomplete){
+        if ($complete == $incomplete){    //guessed word - game won
 
           $response['end'] = "win";
 
           $this->endGame($user_id, $word->game_id, true);
         } else {
-          $this->newTurn($user_id, $response);
+          $response['guesses']++;                     //word not guessed - game continues
+
+          UserToGame::where('user_id','=',$user_id)
+          ->where('game_id','=',$response['game_id'])
+              ->update(Array(
+                  'incomplete' => $response['incomplete'],
+                  'letters_played' => $response['letters_played'],
+                  'guesses' => $response['guesses']
+                  ));
 
   }
 
 
-}else{
+}else{         //if no letter is guessed
 
 
       $response['image']++;
-    if ($response['image']>5){
+    if ($response['image']>5){             //6 mistakes - game lost
       $response['end'] = "lose";
 
       $this->endGame($user_id, $word->game_id, false);
-        }else{
-        $this->newTurn($user_id, $response);
+
+    }else{                            // less than 6 mistakes - game continues
+
+      UserToGame::where('user_id','=',$user_id)
+            ->where('game_id','=',$response['game_id'])
+            ->update(Array(
+                'letters_played' => $response['letters_played'],
+                'mistakes' => $response['image']
+                ));
         }
       }
       $response['url'] = url('/');
@@ -169,52 +188,22 @@ class GameController extends Controller
 
 
 
-        protected function newTurn($user_id, $data){
 
+          protected function endGame($user_id, $game_id, $result){
+                        User::where('id','=',$user_id)->increment('games');
+                        if ($result == true){
+                          User::where('id','=',$user_id)->increment('won');
+                        };
+                        UserToGame::where('user_id','=',$user_id)->update(['result' => (int)$result]);
 
-            Game::where('game_id','=',$data['game_id'])
-            ->update(Array('open' => false));
+                        //user to game result -1=playing, 0=lost, 1=won
 
-            if ($data['guess']==0){
+                        $players = UserToGame::where('game_id','=',$game_id)->where('result','=','-1')->count();
+                        if ($players == 0){
+                          Game::where('game_id','=',$game_id)->update(['finished' => '1', 'open' => '0']);
+                        }
 
-                UserToGame::where('user_id','=',$user_id)
-                  ->increment('mistakes');
-
-                UserToGame::where('user_id','=',$user_id)
-                      ->update(Array(
-                          'letters_played' => $data['letters_played']
-                          ));
-
-                }else{
-              UserToGame::where('user_id','=',$user_id)
-                    ->increment('guesses');
-
-            UserToGame::where('user_id','=',$user_id)
-                ->update(Array(
-                    'incomplete' => $data['incomplete'],
-                    'letters_played' => $data['letters_played']
-                    ));
-
-                  }
-                  }
-
-                  public function whole(Request $request){
-                    $user_id = Auth::id();
-
-                    $whole = $request->message;
-                    $word = UserToGame::where('user_id','=',$user_id)->where('result','=','-1')->first();
-
-                    $end = $whole == $word->complete ? "win" : "lose";
-
-
-                    $this->endGame($user_id, $word->game_id, $end);
-                    return response()->json(array(
-                      'end' => $end,
-                      'incomplete' => $whole
-
-                      )
-                    );
-                  }
+                      }
 
 
 
@@ -253,22 +242,6 @@ return $result;
     }
 
 
-
-    protected function endGame($user_id, $game_id, $result){
-      User::where('id','=',$user_id)->increment('games');
-      if ($result == true){
-        User::where('id','=',$user_id)->increment('won');
-      };
-      UserToGame::where('user_id','=',$user_id)->update(['result' => (int)$result]);
-
-      //user to game result -1=playing, 0=lost, 1=won
-
-      $players = UserToGame::where('game_id','=',$game_id)->where('result','=','-1')->count();
-      if ($players == 0){
-        Game::where('game_id','=',$game_id)->update(['finished' => '1', 'open' => '0']);
-      }
-
-    }
 
 
 }

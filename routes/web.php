@@ -20,7 +20,6 @@ Auth::routes();
 Route::get('/home', 'HomeController@index')->name('home');
 Route::get('/game','GameController@index');
 Route::post('/game/guess','GameController@guess');
-Route::post('/game/whole','GameController@whole');
 Route::get('/game/{game_id}','GameController@index');
 Route::post('/notify','GameController@notifyGame');
 Route::post('/opengames','HomeController@openGames');
