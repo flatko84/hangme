@@ -27,6 +27,6 @@ class Words extends Migration
      */
     public function down()
     {
-        //
+        Schema::dropIfExists('words');
     }
 }
