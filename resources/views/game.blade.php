@@ -68,7 +68,7 @@
                     <input type="button" class="letter" value="m" id="m">
                     <input type="button" class="letter" value="n" id="n">
 
-                  <div>Whole word: <input id="word" name="whole"><input type="button" value="Guess" id="whole"></div>
+                 
                     </div>
 
                 </div>

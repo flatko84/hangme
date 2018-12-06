@@ -78,22 +78,4 @@ $(document).ready(function(){
 
 
 
-$('#whole').click( function() {
-
-	$.ajax({
-		url: '/game/whole',
-		type: 'post',
-    data: {_token: CSRF_TOKEN, message: $('#word').val()},
-		dataType: 'json',
-		success: function(json) {
-
-		$('#incomplete').html(json.incomplete);
-
-    $('#'+json.end).css('display','inline-block');
-    $('#new-game').css('display','inline-block');
-    }
-	});
-});
-
-
 });

@@ -22,93 +22,78 @@ class GameController extends Controller
     public function index($join_id = '0'){
 
         $user_id = Auth::id();
+        $response = Array();
+        $response['user_id'] = $user_id;
+        $response['result'] = '-1';
         $saved = UserToGame::where('user_id', '=', $user_id)->where('result','=','-1')->first();
-        $word = Game::where('game_id','=',$join_id)
-        ->first();
+        
+              if ($saved){
 
-        if ($saved){
+                 // $response = (array)$saved;
+            
+            $response['game_id'] = $saved->game_id;
+            $response['complete'] = $saved->complete;
+            $response['incomplete'] = $saved->incomplete;
+            $response['description'] = $saved->description;
+            $response['guesses'] = $saved->guesses;
+            $response['mistakes'] = $saved->mistakes;
+            $response['letters_played'] = $saved->letters_played;
+//          
 
-          $response = Array(
-            'user_id' => $user_id,
-            'game_id' => $saved->game_id,
-            'complete' => $saved->complete,
-            'incomplete' => $saved->incomplete,
-            'description' => $saved->description,
-            'result' => '-1',
-            'guesses' => $saved->guesses,
-            'mistakes' => $saved->mistakes,
-            'letters_played' => $saved->letters_played
-          );
+        }else{
+            
+            if ($join_id != '0' && $word->open == '1'){
 
-        }elseif ($join_id != '0' && $word->open == '1'){
+                 $word = Game::where('game_id','=',$join_id)
+                 ->first();
 
-            $incomplete = preg_replace('/\B.\B/', '.', $word->word);
-            $letters_opened = preg_replace('/[^a-z]/s','',$incomplete);
+                 $response['game_id'] = $join_id;
 
-            for ($i = 0; $i < strlen($word->word); $i++){
-              if (in_array($word->word[$i],str_split($letters_opened))){
-              $incomplete[$i] = $word->word[$i];
-
-              }
-
-            }
-
-            $response = Array(
-              'user_id' => $user_id,
-              'game_id' => $join_id,
-              'complete' => $word->word,
-              'incomplete' => $incomplete,
-              'description' => $word->description,
-              'result' => '-1',
-              'guesses' => '0',
-              'mistakes' => '0',
-              'letters_played' => $letters_opened
-            );
-
-            UserToGame::insert($response);
 
           }else{
 
-            $word = Word::inRandomOrder()->first();
+            
+                $word = Word::inRandomOrder()->first();
+               
+                $game_id = Game::insertGetId(
+                  Array(
+                  'creator_user_id' => $user_id,
+                  'open' => true,
+                  'word' => $word->word,
+                  'description' => $word->description,
+                  'finished' => '0'
+                  ));
 
-
-        $incomplete = preg_replace('/\B.\B/', '.', $word->word);
-        $letters_opened = preg_replace('/[^a-z]/s','',$incomplete);
-        for ($i = 0; $i < strlen($word->word); $i++){
-          if (in_array($word->word[$i],str_split($letters_opened))){
-          $incomplete[$i] = $word->word[$i];
-
-          }
-
-        }
-
-        $game_id = Game::insertGetId(
-          Array(
-          'creator_user_id' => $user_id,
-          'open' => true,
-          'word' => $word->word,
-          'description' => $word->description,
-          'finished' => '0'
-          ));
-
-        $response = Array(
-            'user_id' => $user_id,
-            'game_id' => $game_id,
-            'complete' => $word->word,
-            'incomplete' => $incomplete,
-            'description' => $word->description,
-            'result' => '-1',
-            'guesses' => '0',
-            'mistakes' => '0',
-            'letters_played' => $letters_opened
-        );
-
-        UserToGame::insert($response);
+        
+            
+                $response['game_id'] = $game_id;
+           
       }
+      
+              $incomplete = preg_replace('/\B.\B/', '.', $word->word);
+              $letters_opened = preg_replace('/[^a-z]/s','',$incomplete);
 
+                for ($i = 0; $i < strlen($word->word); $i++){
+                  if (in_array($word->word[$i],str_split($letters_opened))){
+                  $incomplete[$i] = $word->word[$i];
+
+                  }
+
+                }
+              $response['complete'] = $word->word;
+              $response['incomplete'] = $incomplete;
+              $response['description'] = $word->description;
+              $response['guesses'] = '0';
+              $response['mistakes'] = '0';
+              $response['letters_played'] = $letters_opened;
+            
+
+            UserToGame::insert($response);
+        }
+        
       $response['url'] = url('/');
 
-
+      //print_r($response);
       return view('game',$response);
     }
 
@@ -189,21 +174,21 @@ class GameController extends Controller
 
 
 
-          protected function endGame($user_id, $game_id, $result){
-                        User::where('id','=',$user_id)->increment('games');
-                        if ($result == true){
-                          User::where('id','=',$user_id)->increment('won');
-                        };
-                        UserToGame::where('user_id','=',$user_id)->update(['result' => (int)$result]);
+  protected function endGame($user_id, $game_id, $result){
+                User::where('id','=',$user_id)->increment('games');
+                if ($result == true){
+                  User::where('id','=',$user_id)->increment('won');
+                };
+                UserToGame::where('user_id','=',$user_id)->update(['result' => (int)$result]);
 
-                        //user to game result -1=playing, 0=lost, 1=won
+                //user to game result -1=playing, 0=lost, 1=won
 
-                        $players = UserToGame::where('game_id','=',$game_id)->where('result','=','-1')->count();
-                        if ($players == 0){
-                          Game::where('game_id','=',$game_id)->update(['finished' => '1', 'open' => '0']);
-                        }
+                $players = UserToGame::where('game_id','=',$game_id)->where('result','=','-1')->count();
+                if ($players == 0){
+                  Game::where('game_id','=',$game_id)->update(['finished' => '1', 'open' => '0']);
+                }
 
-                      }
+              }
 
 
 
