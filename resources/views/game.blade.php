@@ -7,7 +7,7 @@
             <div class="card">
                 <div class="card-header">Hang Me
                   <div id="notify">
-                    Game started.
+                    Game started
                   </div>
                   <div style="display: inline-block; position: relative; right:0px">
                   <input type=button value="Back To Stats" onClick="window.location='/home'">
