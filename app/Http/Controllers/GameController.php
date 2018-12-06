@@ -29,7 +29,7 @@ class GameController extends Controller
         
               if ($saved){
 
-                 // $response = (array)$saved;
+                //  $response = (array)$saved;
             
             $response['game_id'] = $saved->game_id;
             $response['complete'] = $saved->complete;
@@ -38,7 +38,7 @@ class GameController extends Controller
             $response['guesses'] = $saved->guesses;
             $response['mistakes'] = $saved->mistakes;
             $response['letters_played'] = $saved->letters_played;
-//          
+          
 
         }else{
             
@@ -73,10 +73,12 @@ class GameController extends Controller
            
           }
       
-              $incomplete = preg_replace('/\B.\B/', '.', $word->word);
-              $letters_opened = preg_replace('/[^a-z]/s','',$incomplete);
+              $incomplete = preg_replace('/\B.\B/u', '.', $word->word);
+              $letters_opened = preg_replace('/[^a-z]/su','',$incomplete);
+              
+              
 
-                for ($i = 0; $i < strlen($word->word); $i++){
+                for ($i = 0; $i < mb_strlen($word->word); $i++){
                   if (in_array($word->word[$i],str_split($letters_opened))){
                   $incomplete[$i] = $word->word[$i];
 
@@ -96,7 +98,7 @@ class GameController extends Controller
         
           $response['url'] = url('/');
 
-          //print_r($response);
+          //var_dump($response);
           return view('game',$response);
     }
 

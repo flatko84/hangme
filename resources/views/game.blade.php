@@ -41,6 +41,10 @@
 
 
                     <img id="pic" src="{{ $url.'/'.$mistakes }}.png"><br>
+                    
+                    
+                    
+                    
                     <input type="button" class="letter" value="q" id="q">
                     <input type="button" class="letter" value="w" id="w">
                     <input type="button" class="letter" value="e" id="e">
@@ -67,6 +71,9 @@
                     <input type="button" class="letter" value="b" id="b">
                     <input type="button" class="letter" value="m" id="m">
                     <input type="button" class="letter" value="n" id="n">
+                    
+                    
+                    
                     
                     
 
