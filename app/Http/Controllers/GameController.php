@@ -42,10 +42,13 @@ class GameController extends Controller
 
         }else{
             
-            if ($join_id != '0' && $word->open == '1'){
+            if ($join_id != '0'){
 
                  $word = Game::where('game_id','=',$join_id)
+                 ->where('open','=','1')
                  ->first();
+                 
+            
 
                  $response['game_id'] = $join_id;
 
@@ -68,7 +71,7 @@ class GameController extends Controller
             
                 $response['game_id'] = $game_id;
            
-      }
+          }
       
               $incomplete = preg_replace('/\B.\B/', '.', $word->word);
               $letters_opened = preg_replace('/[^a-z]/s','',$incomplete);
@@ -91,10 +94,10 @@ class GameController extends Controller
             UserToGame::insert($response);
         }
         
-      $response['url'] = url('/');
+          $response['url'] = url('/');
 
-      //print_r($response);
-      return view('game',$response);
+          //print_r($response);
+          return view('game',$response);
     }
 
 
