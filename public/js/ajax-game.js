@@ -5,9 +5,9 @@ $(document).ready(function(){
      evt = evt || window.event;
      var charCode = evt.which || evt.keyCode;
      var charStr = String.fromCharCode(charCode);
-     if (/[a-z0-9]/i.test(charStr)) {
+     //if (/[a-z0-9]/i.test(charStr)) {
          $('#'+charStr).click();
-     }
+     //}
   };
 
   setInterval(function(){
