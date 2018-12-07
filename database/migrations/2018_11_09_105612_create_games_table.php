@@ -18,6 +18,7 @@ class CreateGamesTable extends Migration
             $table->integer('creator_user_id');
             $table->text('word');
             $table->text('description');
+            $table->text('keyboard');
             $table->integer('finished');
             //if game is open; closes after someone makes first move
             $table->boolean('open');

@@ -1,4 +1,6 @@
 $(document).ready(function(){
+      var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
+
   document.onkeypress = function(evt) {
      evt = evt || window.event;
      var charCode = evt.which || evt.keyCode;
@@ -47,7 +49,6 @@ $(document).ready(function(){
 
   }
 
-  var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
     $('.letter').click( function() {
       var letter = $(this).attr("value");
 	     $.ajax({
@@ -68,7 +69,7 @@ $(document).ready(function(){
     if (json.end) {
         $('#'+json.end).css('display','inline-block');
         $('#new-game').css('display','inline-block');
-
+        
 
 
       }

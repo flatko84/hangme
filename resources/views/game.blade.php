@@ -43,7 +43,7 @@
                     <img id="pic" src="{{ $url.'/'.$mistakes }}.png"><br>
                     
                     
-                    @foreach ($keys as $key)
+                    @foreach ($keyboard as $key)
                      @if ($key == "br")
                      <br>
                      @else

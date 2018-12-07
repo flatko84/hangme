@@ -14,5 +14,10 @@ class UserToGame extends Model
 
     return $this->belongsTo('App\User','user_id', 'id');
   }
+  
+  public function games(){
+
+    return $this->belongsTo('App\Game','user_id', 'creator_user_id');
+  }
     //
 }

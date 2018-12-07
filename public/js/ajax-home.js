@@ -1,3 +1,4 @@
+var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
 setInterval(function(){
 $.ajax({
  url: '/opengames',
@@ -18,4 +19,4 @@ $.ajax({
 }
 });
 },3000);
-var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
+

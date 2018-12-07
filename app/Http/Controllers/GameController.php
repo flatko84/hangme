@@ -39,6 +39,7 @@ class GameController extends Controller
             $response['guesses'] = $saved->guesses;
             $response['mistakes'] = $saved->mistakes;
             $response['letters_played'] = $saved->letters_played;
+            $response['keyboard'] = $saved->keyboard;
           
 
         }else{
@@ -58,13 +59,14 @@ class GameController extends Controller
 
             
                 $word = Word::inRandomOrder()->first();
-               
+                
                 $game_id = Game::insertGetId(
                   Array(
                   'creator_user_id' => $user_id,
                   'open' => true,
                   'word' => $word->word,
                   'description' => $word->description,
+                  'keyboard' => $word->keyboard,
                   'finished' => '0'
                   ));
 
@@ -73,17 +75,30 @@ class GameController extends Controller
                 $response['game_id'] = $game_id;
            
           }
-      
+              //open first and last letter in every word
               $incomplete = preg_replace('/\B.\B/u', '.', $word->word);
-              $letters_opened = preg_replace('/[^a-z]/us','',$incomplete);
+              $ar_incomplete = preg_split('//u', $incomplete,-1, PREG_SPLIT_NO_EMPTY);
+              $ar_complete = preg_split('//u', $word->word,-1, PREG_SPLIT_NO_EMPTY);
+              
+              // calculate letters played
+              $ar_letters_opened = Array();
+              for ($l = 0;$l < mb_strlen($incomplete,'UTF-8');$l++){
+                  
+                  if ($ar_incomplete[$l] != '.' && $ar_incomplete[$l] != ' ' && $ar_incomplete[$l] != ','){
+                      $ar_letters_opened[] = $ar_incomplete[$l];
+                  }
+              }
+              
+              $letters_opened = implode('',$ar_letters_opened);
               
               
 
-                for ($i = 0; $i < strlen($word->word); $i++){
-                  if (in_array($word->word[$i],str_split($letters_opened))){
-                  $incomplete[$i] = $word->word[$i];
+                for ($i = 0; $i < mb_strlen($incomplete,'UTF-8'); $i++){
+                  if (mb_strpos($letters_opened,$ar_complete[$i],0,'UTF-8') !== false){
+                  $ar_incomplete[$i] = $ar_complete[$i];
 
                   }
+                  $incomplete = implode('',$ar_incomplete);
 
                 }
               $response['complete'] = $word->word;
@@ -92,13 +107,13 @@ class GameController extends Controller
               $response['guesses'] = '0';
               $response['mistakes'] = '0';
               $response['letters_played'] = $letters_opened;
-            
-
+              $response['keyboard'] = $word->keyboard;
+            //print_r($ar_incomplete);
             UserToGame::insert($response);
         }
         
           $response['url'] = url('/');
-          $response['keys'] = $this->lettersLayout('latin');
+          $response['keyboard'] = $this->lettersLayout($response['keyboard']);
           //var_dump($response);
           return view('game',$response);
     }
@@ -129,9 +144,15 @@ class GameController extends Controller
 
 
       if (!empty($positions)){   //if guessed letter
+          $ar_incomplete = preg_split('//u', $incomplete,-1, PREG_SPLIT_NO_EMPTY);
+          
         foreach ($positions as $position){
-          $incomplete[$position] = $letter;
+           
+          $ar_incomplete[$position] = $letter;
         }
+        
+        $incomplete = implode('',$ar_incomplete);
+        
         $response['incomplete'] = $incomplete;
         $response['guess'] = true;
 
@@ -145,7 +166,7 @@ class GameController extends Controller
 
           UserToGame::where('user_id','=',$user_id)
           ->where('game_id','=',$response['game_id'])
-              ->update(Array(
+          ->update(Array(
                   'incomplete' => $response['incomplete'],
                   'letters_played' => $response['letters_played'],
                   'guesses' => $response['guesses']
@@ -184,7 +205,7 @@ class GameController extends Controller
                 User::where('id','=',$user_id)->increment('games');
                 if ($result == true){
                   User::where('id','=',$user_id)->increment('won');
-                };
+                }
                 UserToGame::where('user_id','=',$user_id)->update(['result' => (int)$result]);
 
                 //user to game result -1=playing, 0=lost, 1=won
@@ -225,7 +246,7 @@ class GameController extends Controller
     protected function multiStrpos($word,$letter){
       $start = 0;
       $result = Array();
-      while (($curr = strpos($word,$letter,$start)) !== false) {
+      while (($curr = mb_strpos($word,$letter,$start,'UTF-8')) !== false) {
         $start = $curr + 1;
         $result[] = $curr;
     }
