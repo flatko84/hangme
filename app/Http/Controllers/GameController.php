@@ -24,6 +24,7 @@ class GameController extends Controller
         $user_id = Auth::id();
         $response = Array();
         $response['user_id'] = $user_id;
+        
         $response['result'] = '-1';
         $saved = UserToGame::where('user_id', '=', $user_id)->where('result','=','-1')->first();
         
@@ -74,11 +75,11 @@ class GameController extends Controller
           }
       
               $incomplete = preg_replace('/\B.\B/u', '.', $word->word);
-              $letters_opened = preg_replace('/[^a-z]/su','',$incomplete);
+              $letters_opened = preg_replace('/[^a-z]/us','',$incomplete);
               
               
 
-                for ($i = 0; $i < mb_strlen($word->word); $i++){
+                for ($i = 0; $i < strlen($word->word); $i++){
                   if (in_array($word->word[$i],str_split($letters_opened))){
                   $incomplete[$i] = $word->word[$i];
 
@@ -97,7 +98,7 @@ class GameController extends Controller
         }
         
           $response['url'] = url('/');
-
+          $response['keys'] = $this->lettersLayout('latin');
           //var_dump($response);
           return view('game',$response);
     }
@@ -231,7 +232,15 @@ class GameController extends Controller
 return $result;
     }
 
-
+    protected function lettersLayout($type){
+        switch ($type){
+            case 'latin': $layout = ['q','w','e','r','t','y','u','i','o','p','br','a','s','d','f','g','h','j','k','l','br','z','x','c','v','b','n','m'];
+                break;
+            case 'cyr': $layout = ['у','е','и','ш','щ','к','с','д','з','ц','br','ь','я','а','о','ж','г','т','н','в','м','ч','br','ю','й','ъ','э','ф','х','п','р','л','б'];
+                break;
+     }
+        return $layout;
+    }
 
 
 }
