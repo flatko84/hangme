@@ -21,6 +21,8 @@ class WikipediaGenerateWord implements ServiceGenerateWord  {
     public $description;
     public $keyboard;
     
+    //public $descr;
+    
     public function getWord(){
         
         $wikipedia_url = 'https://en.wikipedia.org/w/api.php?format=json&action=query&generator=random&grnnamespace=0&prop=revisions|images&rvprop=content&grnlimit=1';
@@ -44,13 +46,16 @@ class WikipediaGenerateWord implements ServiceGenerateWord  {
             
         }
         
-        preg_match('/\[\[Category.*\]\]/u',$descr_level2,$ar_description);
-        $description = implode('',$ar_description);
+        preg_match_all('/(\[\[Category.*\]\])+/Uu',$descr_level2,$ar_description);
+        
+        $description = implode('',$ar_description[1]);
+        $description = str_replace("]][[",", ",$description);
+        $description = substr($description,2,-2);
         
         $this->word = strtolower($title);
-        $this->description = substr($description,2,-2);
+        $this->description = $description;
         $this->keyboard = 'latin';
-        
+        //$this->descr = $descr_level2;
         
         return $this;
         
