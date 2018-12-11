@@ -32,6 +32,9 @@
                       <div id="lose" style="display: none;">
                         <h2>You've been hanged!</h2>
                       </div>
+                      <div id="correct">
+                            
+                      </div>
                       <div id="new-game" style="display: none;">
                         <input type="button" value="New Game" onclick="window.location='/game'">
 

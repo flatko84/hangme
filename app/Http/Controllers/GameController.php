@@ -171,6 +171,7 @@ class GameController extends Controller
           $response['end'] = "win";
 
           $this->endGame($user_id, $word->game_id, true);
+          $response['complete'] = $complete;
         } else {
           $response['guesses']++;                     //word not guessed - game continues
 
@@ -193,6 +194,7 @@ class GameController extends Controller
       $response['end'] = "lose";
 
       $this->endGame($user_id, $word->game_id, false);
+      $response['complete'] = $complete;
 
     }else{                            // less than 6 mistakes - game continues
 

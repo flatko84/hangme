@@ -35,11 +35,20 @@ class WikipediaGenerateWord implements ServiceGenerateWord  {
             
         }
         
-        $test_descr = $article->revisions[0];
+        $descr_level1 = $article->revisions[0];
+        
+        foreach ($descr_level1 as $l1){
+            $descr_level2 = $l1;
+            
+        }
+        
+        preg_match('/\[\[Category:.*\]\]/u',$descr_level2,$ar_description);
+        $description = implode('',$ar_description);
         
         $this->word = strtolower($article->title);
-        $this->description = '';
+        $this->description = $description;
         $this->keyboard = 'latin';
+        
         
         return $this;
         

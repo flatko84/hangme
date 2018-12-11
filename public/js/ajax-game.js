@@ -69,6 +69,7 @@ $(document).ready(function(){
     if (json.end) {
         $('#'+json.end).css('display','inline-block');
         $('#new-game').css('display','inline-block');
+        $('#correct').html(json.complete);
         
 
 
