@@ -9,4 +9,5 @@ class Word extends Model
   protected $table = 'words';
   protected $primaryKey = 'word_id';
     //
+  
 }

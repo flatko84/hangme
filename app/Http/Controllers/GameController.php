@@ -6,6 +6,8 @@ use App\Game;
 use App\User;
 use App\UserToGame;
 use App\Word;
+use App\Library\ServiceGenerateWord;
+
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -19,7 +21,12 @@ class GameController extends Controller
       $this->middleware('auth');
   }
 
-    public function index($join_id = '0'){
+    public function index($join_id = '0', ServiceGenerateWord $generate){
+//        var_dump($generate->getWord());
+//    }
+//        
+//        
+//        public function index1(){
 
         $user_id = Auth::id();
         $response = Array();
@@ -57,8 +64,11 @@ class GameController extends Controller
 
           }else{
 
+              
+                
             
-                $word = Word::inRandomOrder()->first();
+            $word = $generate->getWord();
+              
                 
                 $game_id = Game::insertGetId(
                   Array(
@@ -114,7 +124,7 @@ class GameController extends Controller
         
           $response['url'] = url('/');
           $response['keyboard'] = $this->lettersLayout($response['keyboard']);
-          //var_dump($response);
+          //var_dump($word);
           return view('game',$response);
     }
 
@@ -250,7 +260,7 @@ class GameController extends Controller
         $start = $curr + 1;
         $result[] = $curr;
     }
-return $result;
+        return $result;
     }
 
     protected function lettersLayout($type){
@@ -262,6 +272,8 @@ return $result;
      }
         return $layout;
     }
+    
+    
 
 
 }
