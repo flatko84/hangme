@@ -27,9 +27,7 @@ class GenerateWord extends ServiceProvider
     public function register()
     {
    
-        $this->app->bind('App\Library\ServiceGenerateWord', function ($app) {
-          return new WikipediaGenerateWord();
-        });
+        $this->app->bind('App\Library\ServiceGenerateWord', 'App\Library\WordServices\\'.env('WORD_PROVIDER').'GenerateWord');
     
     }
 }
