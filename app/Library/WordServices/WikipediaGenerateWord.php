@@ -25,7 +25,7 @@ class WikipediaGenerateWord implements ServiceGenerateWord  {
     
     public function getWord(){
         
-        $locale = (env('WIKIPEDIA_LOCALE')=='bg' ? 'bg' : 'en' );
+        $locale = (env('WIKIPEDIA_LOCALE') ? env('WIKIPEDIA_LOCALE') : 'en' );
         
         $wikipedia_url = 'https://'. $locale .'.wikipedia.org/w/api.php?format=json&action=query&generator=random&grnnamespace=0&prop=revisions|images&rvprop=content&grnlimit=1';
         
@@ -40,6 +40,9 @@ class WikipediaGenerateWord implements ServiceGenerateWord  {
         
         $title = $article->title;
         $title = preg_replace('/[^(\w\s)]/u','',$title);
+        $title = preg_replace('/[\d]/u','',$title);
+        $title = mb_ereg_replace('\(','',$title);
+        $title = mb_ereg_replace('\)','',$title);
         
         $descr_level1 = $article->revisions[0];
         
@@ -55,11 +58,10 @@ class WikipediaGenerateWord implements ServiceGenerateWord  {
         $description = implode('',$ar_description[1]);
         $description = str_replace("]][[",", ",$description);
         $description = substr($description,2,-2);
+        $description = str_replace($title,"",$description);
         
         $this->word = mb_strtolower($title);
         $this->description = $description;
-        $this->keyboard = ( $locale == 'en' ? 'latin' : 'cyr');
-        //$this->descr = $descr_level2;
         
         return $this;
         

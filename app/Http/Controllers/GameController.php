@@ -46,7 +46,6 @@ class GameController extends Controller
             $response['guesses'] = $saved->guesses;
             $response['mistakes'] = $saved->mistakes;
             $response['letters_played'] = $saved->letters_played;
-            $response['keyboard'] = $saved->keyboard;
           
 
         }else{
@@ -76,7 +75,6 @@ class GameController extends Controller
                   'open' => true,
                   'word' => $word->word,
                   'description' => $word->description,
-                  'keyboard' => $word->keyboard,
                   'finished' => '0'
                   ));
 
@@ -117,13 +115,14 @@ class GameController extends Controller
               $response['guesses'] = '0';
               $response['mistakes'] = '0';
               $response['letters_played'] = $letters_opened;
-              $response['keyboard'] = $word->keyboard;
+              
             //print_r($ar_incomplete);
             UserToGame::insert($response);
         }
         
           $response['url'] = url('/');
-          $response['keyboard'] = $this->lettersLayout($response['keyboard']);
+          $response['keyboards'] = $this->keyboards();
+          
           //var_dump($word);
           return view('game',$response);
     }
@@ -265,14 +264,14 @@ class GameController extends Controller
         return $result;
     }
 
-    protected function lettersLayout($type){
-        switch ($type){
-            case 'latin': $layout = ['q','w','e','r','t','y','u','i','o','p','br','a','s','d','f','g','h','j','k','l','br','z','x','c','v','b','n','m'];
-                break;
-            case 'cyr': $layout = ['у','е','и','ш','щ','к','с','д','з','ц','br','ь','я','а','о','ж','г','т','н','в','м','ч','br','ю','й','ъ','э','ф','х','п','р','л','б'];
-                break;
-     }
-        return $layout;
+    protected function keyboards(){
+        
+            $keyboards[] = ['q','w','e','r','t','y','u','i','o','p','br','a','s','d','f','g','h','j','k','l','br','z','x','c','v','b','n','m'];
+                
+            $keyboards[] = ['у','е','и','ш','щ','к','с','д','з','ц','br','ь','я','а','о','ж','г','т','н','в','м','ч','br','ю','й','ъ','э','ф','х','п','р','л','б'];
+                
+     
+        return $keyboards;
     }
     
     

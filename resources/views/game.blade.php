@@ -44,8 +44,8 @@
 
 
                     <img id="pic" src="{{ $url.'/'.$mistakes }}.png"><br>
-                    
-                    
+                    @foreach ($keyboards as $keyboard)
+                    <p>
                     @foreach ($keyboard as $key)
                      @if ($key == "br")
                      <br>
@@ -53,7 +53,8 @@
                     <input type="button" class="letter" value="{{ $key }}" id="{{ $key }}">
                      @endif
                     @endforeach
-                    
+                    </p>
+                    @endforeach
                     
                     
                     
