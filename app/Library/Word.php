@@ -19,7 +19,6 @@ class Word {
     
     public $word;
     public $description;
-    public $keyboard;
     
     public function __construct(ServiceGenerateWord $servicegenerateword) {
         return $servicegenerateword->getWord();

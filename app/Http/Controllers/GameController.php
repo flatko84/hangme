@@ -22,7 +22,7 @@ class GameController extends Controller
   }
 
     public function index($join_id = '0', ServiceGenerateWord $generate){
-//        var_dump($generate->getWord());
+//       $s = $generate->getWord();
 //    }
 //        
 //        

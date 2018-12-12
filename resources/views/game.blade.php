@@ -55,14 +55,7 @@
                     @endforeach
                     </p>
                     @endforeach
-                    
-                    
-                    
-                    
-                    
-                    
-
-                 
+            
                     </div>
 
                 </div>
