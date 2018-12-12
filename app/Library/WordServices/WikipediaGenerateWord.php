@@ -25,7 +25,9 @@ class WikipediaGenerateWord implements ServiceGenerateWord  {
     
     public function getWord(){
         
-        $wikipedia_url = 'https://en.wikipedia.org/w/api.php?format=json&action=query&generator=random&grnnamespace=0&prop=revisions|images&rvprop=content&grnlimit=1';
+        $locale = (env('WIKIPEDIA_LOCALE')=='bg' ? 'bg' : 'en' );
+        
+        $wikipedia_url = 'https://'. $locale .'.wikipedia.org/w/api.php?format=json&action=query&generator=random&grnnamespace=0&prop=revisions|images&rvprop=content&grnlimit=1';
         
         $article = json_decode(file_get_contents($wikipedia_url));
        
@@ -37,7 +39,7 @@ class WikipediaGenerateWord implements ServiceGenerateWord  {
         }
         
         $title = $article->title;
-        $title = preg_replace('/[^a-zA-Z_\s]/u','',$title);
+        $title = preg_replace('/[^(\w\s)]/u','',$title);
         
         $descr_level1 = $article->revisions[0];
         
@@ -46,15 +48,17 @@ class WikipediaGenerateWord implements ServiceGenerateWord  {
             
         }
         
-        preg_match_all('/(\[\[Category.*\]\])+/Uu',$descr_level2,$ar_description);
+        
+        $cat_string = ($locale == 'en' ? 'Category' : 'Категория');
+        preg_match_all('/(\[\['.$cat_string.'.*\]\])+/Uu',$descr_level2,$ar_description);
         
         $description = implode('',$ar_description[1]);
         $description = str_replace("]][[",", ",$description);
         $description = substr($description,2,-2);
         
-        $this->word = strtolower($title);
+        $this->word = mb_strtolower($title);
         $this->description = $description;
-        $this->keyboard = 'latin';
+        $this->keyboard = ( $locale == 'en' ? 'latin' : 'cyr');
         //$this->descr = $descr_level2;
         
         return $this;

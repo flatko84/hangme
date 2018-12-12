@@ -26,8 +26,16 @@ class GenerateWord extends ServiceProvider
      */
     public function register()
     {
-   
-        $this->app->bind('App\Library\ServiceGenerateWord', 'App\Library\WordServices\\'.env('WORD_PROVIDER').'GenerateWord');
+       
+        
+        if ( env('WORD_PROVIDER') && env('WORD_PROVIDER') != '' ){
+            
+             $setting = env('WORD_PROVIDER');
+        }else {
+            $setting = 'Database';
+        }
+        
+        $this->app->bind('App\Library\ServiceGenerateWord', 'App\Library\WordServices\\' . $setting . 'GenerateWord');
     
     }
 }
