@@ -17,7 +17,6 @@ class Words extends Migration
           $table->increments('word_id');
           $table->text('word');
           $table->text('description');
-          $table->text('keyboard');
       });
     }
 
