@@ -68,7 +68,7 @@
 @section('gamescript')
 <script type="text/javascript">var init_letters_played = '{{ $letters_played }}';var game_id = {{ $game_id }}</script>
 <script type="text/javascript" src="{{ asset('js/ajax-game.js') }}"></script>
-
+<link rel="stylesheet" type="text/css" href="css/result.css"> 
 
 
 @endsection
