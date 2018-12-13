@@ -9,9 +9,7 @@
 namespace App\Library\WordServices;
 
 use App\Library\ServiceGenerateWord;
-
 use App\Word;
-
 
 /**
  * Description of DatabaseGenerateWord
@@ -20,12 +18,9 @@ use App\Word;
  */
 class DatabaseGenerateWord implements ServiceGenerateWord {
 
-    
-    public function getWord(){
+    public function getWord() {
         $newword = Word::inRandomOrder()->first();
         return $newword;
-        
-        
-        
     }
+
 }

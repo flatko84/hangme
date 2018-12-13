@@ -7,22 +7,17 @@
  */
 
 namespace App\Library;
+
 use \App\Library\ServiceGenerateWord;
 use \App\Library\WordServices\DatabaseGenerateWord;
 
-/**
- * Description of Word
- *
- * @author vdonkov
- */
+
 class Word {
-    
+
     public $word;
     public $description;
-    
+
     public function __construct(ServiceGenerateWord $servicegenerateword) {
         return $servicegenerateword->getWord();
-        
     }
-    //put your code here
 }
