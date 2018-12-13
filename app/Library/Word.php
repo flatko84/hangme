@@ -11,13 +11,13 @@ namespace App\Library;
 use \App\Library\ServiceGenerateWord;
 use \App\Library\WordServices\DatabaseGenerateWord;
 
-
 class Word {
 
-    public $word;
-    public $description;
+	public $word;
+	public $description;
 
-    public function __construct(ServiceGenerateWord $servicegenerateword) {
-        return $servicegenerateword->getWord();
-    }
+	public function __construct(ServiceGenerateWord $servicegenerateword) {
+		return $servicegenerateword->getWord();
+	}
+
 }
