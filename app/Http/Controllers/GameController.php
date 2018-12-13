@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Game;
 use App\User;
 use App\UserToGame;
-use App\Word;
 use App\Library\ServiceGenerateWord;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -48,11 +47,11 @@ class GameController extends Controller {
 				));
 				$response['game_id'] = $game_id;
 			}
-//open first and last letter in every word
+			//open first and last letter in every word
 			$incomplete = preg_replace('/\B.\B/u', '.', $word->word);
 			$ar_incomplete = preg_split('//u', $incomplete, -1, PREG_SPLIT_NO_EMPTY);
 			$ar_complete = preg_split('//u', $word->word, -1, PREG_SPLIT_NO_EMPTY);
-// calculate letters played
+			// calculate letters played
 			$ar_letters_opened = array();
 			for ($l = 0; $l < mb_strlen($incomplete, 'UTF-8'); $l++) {
 				if ($ar_incomplete[$l] != '.' && $ar_incomplete[$l] != ' ' && $ar_incomplete[$l] != ',') {
@@ -148,7 +147,7 @@ class GameController extends Controller {
 		}
 		UserToGame::where('user_id', '=', $user_id)->update(['result' => (int) $result]);
 		
-//user to game result -1=playing, 0=lost, 1=won
+		//user to game result -1=playing, 0=lost, 1=won
 		$players = UserToGame::where('game_id', '=', $game_id)->where('result', '=', '-1')->count();
 		if ($players == 0) {
 			Game::where('game_id', '=', $game_id)->update(['finished' => '1', 'open' => '0']);
